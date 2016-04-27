@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Google Maps API</title>
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=xxx &sensor=false"></script>
+    <style>
+        #sample {
+            width: 700px;
+            height: 400px;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function(event) {
+            (function(){
+                var center = new google.maps.LatLng(35.657953,139.705078); // 緯度, 軽度
+                var opts = {
+                    zoom: 18, // 地図のズームを指定
+                    center: center,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                };
+                var map = new google.maps.Map(document.getElementById("sample"), opts);
+            })();
+        });
+    </script>
+</head>
+<body>
+    <div id="sample"></div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Google Maps API</title>
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=xxx &sensor=false"></script>
+    <style>
+        #sample {
+            width: 700px;
+            height: 400px;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function(event) {
+            (function(){
+                var center = new google.maps.LatLng(35.657953,139.705078); // 緯度, 軽度
+                var opts = {
+                    zoom: 18, // 地図のズームを指定
+                    center: center,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                };
+                var map = new google.maps.Map(document.getElementById("sample"), opts);
+                var center_marker = new google.maps.Marker({ // マーカーの追加
+                    position: center, // マーカーを立てる位置を指定
+                    map: map, // マーカーを立てる地図を指定
+                    icon:new google.maps.MarkerImage(
+                            'img/goga.png',                     // url
+                            new google.maps.Size(120,120), // size
+                            new google.maps.Point(0,0),  // origin
+                            new google.maps.Point(16,16), // anchor
+                            new google.maps.Size(25, 25) //scaledSize
+                    )
+                });
+                var center_info_window = new google.maps.InfoWindow({
+                    pixelOffset: new google.maps.Size(-48, 0), //ウィンドウ位置調整
+                    content: "<dl id='center_window'><dt><a href='http://www.goga.co.jp/'>株式会社ゴーガ<br><img src='img/goga.png' width='50px' /></a></dt></dl>"
+                });
+                google.maps.event.addListener(center_marker, 'click', function() { // 地図を指定
+                    center_info_window.open( map, center_marker); //地図を指定, マーカー
+                });
+            })();
+        });
+    </script>
+</head>
+<body>
+    <div id="sample"></div>
+</body>
+</html>

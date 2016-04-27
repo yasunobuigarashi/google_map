@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<!-- http://www.geocoding.jp/
+https://code.google.com/apis/console -->
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Google Maps API</title>
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=xxx &sensor=false"></script>
+    <style>
+        #sample {
+            width: 700px;
+            height: 400px;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function(event) {
+            (function(){
+                var global = this;
+                var center = new google.maps.LatLng(35.657953,139.705078); // 緯度, 軽度
+                var opts = {
+                    zoom: 16, // 地図のズームを指定
+                    center: center,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                };
+                var map = new google.maps.Map(document.getElementById("sample"), opts);
+
+                //マーカー
+                var center_marker = new google.maps.Marker({ // マーカーの追加
+                    position: center, // マーカーを立てる位置を指定
+                    map: map, // マーカーを立てる地図を指定
+                    icon:new google.maps.MarkerImage(
+                            'img/goga.png',                     // url
+                            new google.maps.Size(120,120), // size
+                            new google.maps.Point(0,0),  // origin
+                            new google.maps.Point(16,16), // anchor
+                            new google.maps.Size(25, 25) //scaledSize
+                    )
+                });
+                //インフォウィンドウ
+                var center_info_window = new google.maps.InfoWindow({
+                    pixelOffset: new google.maps.Size(-48, 0), //ウィンドウ位置調整
+                    content: "<dl id='center_window'><dt><a href='http://www.goga.co.jp/'>株式会社ゴーガ<br><img src='img/goga.png' width='50px' /></a></dt></dl>"
+                });
+                //マーカーとインフォウィンドウを結びつけ
+                google.maps.event.addListener(center_marker, 'click', function() { // 地図を指定
+                    center_info_window.open( map, center_marker); //地図を指定, マーカー
+                });
+                // 即時関数でブロック
+                (function(){
+                    //lunch Maps
+                    var lunch_maps_arr = [
+                        {
+                            shop_name:"渋谷カリガリ",
+                            shop_url: "http://caligari.jp/",
+                            shop_img_path: "http://caligari.jp/site_images/menu_logo.gif",
+                            lat: 35.657614,
+                            lng: 139.708239,
+                            icon: new google.maps.MarkerImage(
+                                    'http://caligari.jp/site_images/menu_logo.gif',
+                                    new google.maps.Size(277,79), // size
+                                    new google.maps.Point(0,0),  // origin
+                                    new google.maps.Point(0,0), // anchor
+                                    new google.maps.Size(92, 26) //scaledSize
+                            ),
+                            pixel_offset: new google.maps.Size(-100, 0)
+
+                        },
+                        {
+                            shop_name:"天下一品",
+                            shop_url: "http://tabelog.com/tokyo/A1303/A130301/13019266/",
+                            shop_img_path: "https://tenkaippin.co.jp/img/img_logo.gif",
+                            lat: 35.660733,
+                            lng: 139.698068,
+                            icon: new google.maps.MarkerImage(
+                                    'https://tenkaippin.co.jp/img/img_logo.gif',
+                                    new google.maps.Size(277,79), // size
+                                    new google.maps.Point(0,0),  // origin
+                                    new google.maps.Point(0,0), // anchor
+                                    new google.maps.Size(92, 26) //scaledSize
+                            ),
+                            pixel_offset: new google.maps.Size(-100, 0)
+
+                        }
+                    ];
+
+                    //Node追加用
+                    var fragment = document.createDocumentFragment();
+                    // list
+                    var $list = document.getElementById("list");
+
+                    //Mapの移動
+                    function panTo(lat, lng){
+                        map.panTo(new google.maps.LatLng(lat,lng));
+                    }
+                    global.panTo = panTo;
+
+                    lunch_maps_arr.forEach(function(obj){
+                        // 緯度, 軽度
+                        var lat_lng = new google.maps.LatLng(obj.lat, obj.lng);
+                        // マーカー作成
+                        var marker = new google.maps.Marker({
+                            position: lat_lng,
+                            map: map,
+                            icon: obj.icon
+                        });
+                        //インフォウィンドウ
+                        var info_window = new google.maps.InfoWindow({
+                            pixelOffset: obj.pixel_offset,
+                            content: "<dl><dt><a href='" + obj.shop_url + "'>" + obj.shop_name + "<br><img src='" + obj.shop_img_path + "' width='50px' /></a></dt></dl>"
+                        });
+                        google.maps.event.addListener(marker, 'click', function() {
+                            info_window.open( map, marker);
+                        });
+                        // button 生成
+                        var $li = document.createElement('li');
+                        $li.innerHTML = '<button type="button" onclick="panTo('+ obj.lat +'\,'+ obj.lng +')">'+ obj.shop_name +'</button>';
+                        fragment.appendChild($li);
+                    });
+                    $list.appendChild(fragment);
+                })();
+            }.call(this));
+        });
+    </script>
+</head>
+<body>
+    <div id="sample"></div>
+    <ul id="list">
+    </ul>
+</body>
+</html>
